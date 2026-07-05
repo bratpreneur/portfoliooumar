@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&amp;family=Archivo:wght@300..800&amp;display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1EBDE; --bg-2:#E8E0D0; --surface:#FBF8F1;
+    --ink:#1A1B22; --ink-soft:#4C505A; --muted:#83868F; --line:rgba(26,27,34,.14); --line-2:rgba(26,27,34,.07);
+    --blue-1:#0A1B3C; --blue-2:#153F7C; --accent:#2E5BE6;
+    --on-blue:#F4F1EA; --on-blue-soft:rgba(244,241,234,.72);
+    --serif:'Bodoni Moda',Georgia,serif; --sans:'Archivo',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:400;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  img{display:block;max-width:100%}
+  h1,h2,h3,h4,p{margin:0}
+  ::selection{background:var(--accent);color:#fff}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg-2)}
+  ::-webkit-scrollbar-thumb{background:#c8bfab;border-radius:20px;border:2px solid var(--bg-2)}
+  ::-webkit-scrollbar-thumb:hover{background:#b6ac95}
+  [data-en]{display:none}
+  [data-lang="en"] [data-fr]{display:none}
+  [data-lang="en"] [data-en]{display:revert}
+  @keyframes riseIn{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+  @keyframes clipUp{from{opacity:0;clip-path:inset(16% 0 16% 0);transform:scale(1.05)}to{opacity:1;clip-path:inset(0 0 0 0);transform:none}}
+  @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+  @keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
+  @keyframes scrolldot{0%{transform:translateY(0);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateY(15px);opacity:0}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  [data-anim="on"] [data-reveal]{opacity:0;transform:translateY(42px);transition:opacity 1.05s cubic-bezier(.16,.8,.24,1),transform 1.05s cubic-bezier(.16,.8,.24,1);will-change:opacity,transform}
+  [data-anim="on"] [data-reveal="fade"]{transform:none}
+  [data-anim="on"] [data-reveal="scale"]{transform:scale(.93)}
+  [data-anim="on"] [data-reveal].in{opacity:1;transform:none}
+  [data-nav]{position:fixed;top:0;left:0;right:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1.5rem clamp(1.1rem,4vw,3.5rem);background:transparent;border-bottom:1px solid transparent;transition:background .5s ease,border-color .5s ease,padding .5s ease}
+  [data-scrolled="on"] [data-nav]{background:rgba(241,235,222,.85);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-bottom-color:var(--line);padding-top:.85rem;padding-bottom:.85rem}
+  [data-navlink]{position:relative;text-decoration:none;color:var(--muted);font:500 .82rem/1 var(--sans);letter-spacing:.02em;padding:.4rem 0;transition:color .35s}
+  [data-navlink]:hover{color:var(--ink)}
+  [data-navlink]::after{content:"";position:absolute;left:0;right:100%;bottom:-2px;height:1px;background:var(--accent);transition:right .4s cubic-bezier(.16,.8,.24,1)}
+  [data-navlink]:hover::after{right:0}
+  [data-langbtn]{background:none;border:0;cursor:pointer;font:600 .78rem/1 var(--sans);letter-spacing:.06em;color:var(--muted);padding:.3rem .1rem;transition:color .3s}
+  [data-lang="fr"] [data-langbtn="fr"],[data-lang="en"] [data-langbtn="en"]{color:var(--ink)}
+  [data-chip]{background:transparent;color:var(--muted);border-color:var(--line)}
+  [data-chip]:hover{color:var(--ink);border-color:var(--ink)}
+  [data-filter="all"] [data-chip="all"],[data-filter="video"] [data-chip="video"],[data-filter="produit"] [data-chip="produit"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+  [data-filter="video"] [data-cat="produit"],[data-filter="produit"] [data-cat="video"]{display:none}
+  [data-hoverzoom]{overflow:hidden}
+  [data-hoverzoom] img,[data-hoverzoom] video{transition:transform 1.15s cubic-bezier(.16,.8,.24,1)}
+  [data-hoverzoom]:hover img,[data-hoverzoom]:hover video{transform:scale(1.06)}
+  [data-cardnote]{max-height:0;opacity:0;overflow:hidden;transition:max-height .6s cubic-bezier(.16,.8,.24,1),opacity .5s}
+  [data-cat]:hover [data-cardnote]{max-height:10rem;opacity:1;margin-top:.55rem}
+  [data-play]{transition:transform .45s cubic-bezier(.16,.8,.24,1),background .4s,border-color .4s}
+  [data-cat]:hover [data-play]{transform:scale(1.12);background:var(--accent);border-color:var(--accent)}
+  [data-cap]{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+  [data-book]:hover [data-cap]{opacity:1;transform:none}
+  [data-brand-word]{color:var(--muted);transition:color .45s,transform .45s}
+  [data-brand-word]:hover{color:var(--ink);transform:translateY(-4px)}
+  [data-grain-layer]{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:0;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:170px 170px}
+  [data-grain="on"] [data-grain-layer]{opacity:.035}
+  [data-progress]{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;z-index:90}
+  [data-menupanel]{position:fixed;inset:0;z-index:85;background:rgba(241,235,222,.97);backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;opacity:0;pointer-events:none;transition:opacity .45s}
+  [data-menu="open"] [data-menupanel]{opacity:1;pointer-events:auto}
+  [data-burger]{display:none}
+  [data-field]{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.9em 1em;color:var(--on-blue);font:400 .96rem/1.4 var(--sans);outline:none;transition:border-color .3s,background .3s}
+  [data-field]:focus{border-color:var(--accent);background:rgba(255,255,255,.1)}
+  [data-field]::placeholder{color:rgba(244,241,234,.42)}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  @media (max-width:960px){
+    [data-navlinks]{display:none}
+    [data-burger]{display:inline-flex}
+    [data-hero-grid],[data-two]{grid-template-columns:1fr!important}
+    [data-edit-grid]{grid-template-columns:1fr!important}
+    [data-edit-grid] figure{margin-top:0!important}
+    [data-hero-portrait]{max-width:460px;margin-inline:auto}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+    [data-anim="on"] [data-reveal]{opacity:1!important;transform:none!important}
+  }
+</style>
+</helmet>
+
+<div data-site ref="{{ rootRef }}" data-lang="{{ lang }}" data-filter="{{ filter }}" data-menu="{{ menu }}" data-grain="{{ grainOn }}" data-anim="{{ animOn }}" style="--accent:{{ accent }};position:relative;min-height:100vh;background:var(--bg)">
+
+  <div data-progress></div>
+  <div data-grain-layer></div>
+
+  <nav data-nav>
+    <a href="#top" onClick="{{ closeMenu }}" style="text-decoration:none;display:flex;align-items:center;gap:.75rem;color:var(--ink)">
+      <span style="display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;font-family:var(--serif);font-weight:700;font-size:.95rem">OD</span>
+      <span style="font:600 .9rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase">Oumar&nbsp;Diakite</span>
+    </a>
+    <div data-navlinks style="display:flex;align-items:center;gap:2.1rem">
+      <a href="#apropos" data-navlink><span data-fr>À propos</span><span data-en>About</span></a>
+      <a href="#ugc" data-navlink>UGC</a>
+      <a href="#athlete" data-navlink><span data-fr>Athlète</span><span data-en>Athlete</span></a>
+      <a href="#book" data-navlink>Book</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:1.25rem">
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <button type="button" data-langbtn="fr" onClick="{{ toFr }}">FR</button>
+        <span style="width:1px;height:12px;background:var(--line)"></span>
+        <button type="button" data-langbtn="en" onClick="{{ toEn }}">EN</button>
+      </div>
+      <a href="#contact" onClick="{{ closeMenu }}" style="display:inline-flex;align-items:center;padding:.72em 1.25em;border:1px solid var(--ink);border-radius:100px;text-decoration:none;color:var(--ink);font:600 .76rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;transition:background .35s,color .35s" style-hover="background:var(--ink);color:var(--bg)">
+        <span data-fr>Collaborer</span><span data-en>Work with me</span>
+      </a>
+      <button type="button" data-burger aria-label="Menu" onClick="{{ toggleMenu }}" style="width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+        <span style="display:block;width:16px;height:1.5px;background:var(--ink)"></span>
+        <span style="display:block;width:16px;height:1.5px;background:var(--ink)"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div data-menupanel>
+    <button type="button" aria-label="Fermer" onClick="{{ toggleMenu }}" style="position:absolute;top:1.5rem;right:1.5rem;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:none;color:var(--ink);cursor:pointer;font-size:1.1rem">✕</button>
+    <a href="#apropos" onClick="{{ closeMenu }}" style="font-family:var(--serif);font-size:2rem;color:var(--ink);text-decoration:none"><span data-fr>À propos</span><span data-en>About</span></a>
+    <a href="#ugc" onClick="{{ closeMenu }}" style="font-family:var(--serif);font-size:2rem;color:var(--ink);text-decoration:none">UGC</a>
+    <a href="#athlete" onClick="{{ closeMenu }}" style="font-family:var(--serif);font-size:2rem;color:var(--ink);text-decoration:none"><span data-fr>Athlète</span><span data-en>Athlete</span></a>
+    <a href="#book" onClick="{{ closeMenu }}" style="font-family:var(--serif);font-size:2rem;color:var(--ink);text-decoration:none">Book</a>
+    <a href="#contact" onClick="{{ closeMenu }}" style="font-family:var(--serif);font-size:2rem;color:var(--accent);text-decoration:none">Contact</a>
+  </div>
+
+  <header id="top" style="position:relative;min-height:100svh;display:flex;align-items:center;padding:clamp(7rem,14vh,10rem) clamp(1.1rem,4vw,3.5rem) clamp(3.5rem,7vh,5rem);overflow:hidden">
+    <div aria-hidden="true" style="position:absolute;top:-6%;right:2%;width:52vw;height:52vw;max-width:720px;max-height:720px;background:radial-gradient(circle at 50% 50%,rgba(46,91,230,.24),rgba(46,91,230,0) 62%);filter:blur(8px);animation:glow 7s ease-in-out infinite;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;left:-10%;bottom:-16%;width:44vw;height:44vw;max-width:560px;background:radial-gradient(circle,rgba(224,168,96,.26),transparent 65%);filter:blur(26px);pointer-events:none"></div>
+
+    <div data-hero-grid style="position:relative;z-index:2;width:100%;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1.12fr .88fr;gap:clamp(2rem,5vw,5rem);align-items:center">
+      <div>
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:clamp(1.4rem,3vw,2.2rem)">
+          <span style="font:600 .76rem/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;color:var(--muted)">Portfolio · {{ year }}</span>
+          <span style="height:1px;width:60px;background:var(--line)"></span>
+          <span style="display:inline-flex;align-items:center;gap:.55em;font:500 .74rem/1 var(--sans);letter-spacing:.06em;color:var(--ink)">
+            <span style="width:7px;height:7px;border-radius:50%;background:#1f9e5a;box-shadow:0 0 10px rgba(31,158,90,.6);animation:pulse 2.4s infinite"></span>
+            <span data-fr>Disponible pour collaborations</span><span data-en>Available for brands</span>
+          </span>
+        </div>
+        <h1 style="font-family:var(--serif);font-weight:500;line-height:.88;letter-spacing:-.015em;font-size:clamp(3.4rem,11.5vw,10.5rem)">
+          <span style="display:block">Oumar</span>
+          <span style="display:block;color:transparent;-webkit-text-stroke:1.4px rgba(26,27,34,.8)">Diakite</span>
+        </h1>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.7em 1.1em;margin:clamp(1.4rem,3vw,2rem) 0;font:600 clamp(.8rem,1.4vw,1rem)/1 var(--sans);letter-spacing:.18em;text-transform:uppercase">
+          <span data-fr>Créateur UGC</span><span data-en>UGC Creator</span>
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span>
+          <span data-fr>Athlète</span><span data-en>Athlete</span>
+          <span style="width:5px;height:5px;border-radius:50%;background:var(--accent)"></span>
+          <span data-fr>Mannequin</span><span data-en>Model</span>
+        </div>
+        <p style="max-width:36ch;margin-bottom:clamp(1.9rem,3.5vw,2.5rem);color:var(--ink-soft);font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.62">
+          <span data-fr>Je crée du contenu qui performe. Force, authenticité et présence, au service des marques qui veulent marquer les esprits.</span>
+          <span data-en>I create content that performs. Strength, authenticity and presence, for brands that want to leave a mark.</span>
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:.9rem">
+          <a href="#contact" style="display:inline-flex;align-items:center;gap:.6em;padding:1.05em 1.7em;background:var(--accent);color:#fff;font:600 clamp(.78rem,1vw,.9rem)/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border-radius:100px;text-decoration:none;box-shadow:0 16px 34px -14px var(--accent);transition:transform .5s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-3px);box-shadow:0 24px 50px -14px var(--accent)">
+            <span data-fr>Collaborer avec Oumar</span><span data-en>Work with Oumar</span><span>→</span>
+          </a>
+          <a href="#ugc" style="display:inline-flex;align-items:center;gap:.6em;padding:1.05em 1.7em;color:var(--ink);font:600 clamp(.78rem,1vw,.9rem)/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border-radius:100px;text-decoration:none;border:1px solid var(--line);transition:border-color .4s,background .4s" style-hover="border-color:var(--ink);background:rgba(26,27,34,.04)">
+            <span data-fr>Voir le portfolio</span><span data-en>View portfolio</span>
+          </a>
+        </div>
+      </div>
+
+      <div data-hero-portrait data-parallax="-0.025" style="position:relative">
+        <div aria-hidden="true" style="position:absolute;inset:-14% -12%;background:radial-gradient(58% 52% at 62% 38%,rgba(46,91,230,.32),rgba(46,91,230,0) 70%),radial-gradient(52% 50% at 26% 82%,rgba(224,168,96,.3),transparent 72%);filter:blur(6px);z-index:0"></div>
+        <div data-hoverzoom style="position:relative;z-index:1;border-radius:260px 260px 22px 22px;aspect-ratio:4/5;background:var(--surface);padding:8px;box-shadow:0 46px 100px -34px rgba(20,30,60,.5)">
+          <div style="position:relative;height:100%;border-radius:254px 254px 16px 16px;overflow:hidden">
+            <img src="assets/model-velvet-bust.png" alt="Oumar Diakite" style="width:100%;height:100%;object-fit:cover;object-position:50% 12%"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 62%,rgba(10,11,13,.28) 100%)"></div>
+          </div>
+        </div>
+        <div style="position:absolute;z-index:2;left:-7%;bottom:11%;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:.85rem 1.1rem;display:flex;gap:.9rem;align-items:center;box-shadow:0 24px 50px -22px rgba(20,30,60,.4);animation:floaty 5s ease-in-out infinite">
+          <span style="font-family:var(--serif);font-size:1.9rem;line-height:1;color:var(--ink)">3</span>
+          <span style="font:500 .72rem/1.35 var(--sans);letter-spacing:.02em;color:var(--ink-soft)"><span data-fr>univers,<br>une signature</span><span data-en>worlds,<br>one signature</span></span>
+        </div>
+        <div style="position:absolute;z-index:2;top:-3%;right:-2%;width:64px;height:64px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);background:var(--bg);animation:spin 16s linear infinite">✦</div>
+      </div>
+    </div>
+
+    <a href="#apropos" style="position:absolute;left:50%;bottom:1.5rem;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;text-decoration:none;color:var(--muted);font:500 .64rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase">
+      <span data-fr>Défiler</span><span data-en>Scroll</span>
+      <span style="position:relative;width:22px;height:34px;border:1px solid var(--line);border-radius:12px"><span style="position:absolute;left:50%;top:7px;width:3px;height:6px;margin-left:-1.5px;border-radius:2px;background:var(--accent);animation:scrolldot 1.8s infinite"></span></span>
+    </a>
+  </header>
+
+  <section aria-hidden="true" style="background:linear-gradient(100deg,var(--blue-1),var(--blue-2));color:var(--on-blue);padding:clamp(1.1rem,2.4vw,1.7rem) 0;overflow:hidden">
+    <div style="display:flex;width:max-content;animation:marq 32s linear infinite">
+      <div style="display:flex;align-items:center">
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Créateur UGC</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Athlète de haut niveau</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Mannequin</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Authenticité</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Performance</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Présence</span><span style="color:#7ea2ff">✦</span>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Créateur UGC</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Athlète de haut niveau</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Mannequin</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Authenticité</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Performance</span><span style="color:#7ea2ff">✦</span>
+        <span style="font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2.4rem);padding:0 clamp(1.1rem,2.6vw,2.2rem);white-space:nowrap">Présence</span><span style="color:#7ea2ff">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="apropos" style="padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);max-width:1400px;margin:0 auto;scroll-margin-top:80px">
+    <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(1.6rem,3vw,2.4rem)">
+      <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">01</span>
+      <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)"><span data-fr>À propos</span><span data-en>About</span></span>
+      <span style="flex:1;height:1px;background:var(--line)"></span>
+    </div>
+    <div data-two style="display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3.5rem);align-items:end">
+      <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5.2vw,4.2rem);line-height:1.02;letter-spacing:-.01em;max-width:15ch">
+        <span data-fr>Trois disciplines, une seule exigence : <em style="font-style:italic;color:var(--accent)">l’excellence.</em></span>
+        <span data-en>Three disciplines, one standard: <em style="font-style:italic;color:var(--accent)">excellence.</em></span>
+      </h2>
+      <p data-reveal style="color:var(--ink-soft);font-size:clamp(1.02rem,1.3vw,1.16rem);line-height:1.72;max-width:52ch">
+        <span data-fr>Athlète de haut niveau devenu créateur, je réunis la rigueur du sport, le charisme du mannequinat et l’instinct du contenu qui convertit. Chaque collaboration est pensée comme une performance : préparée, exécutée avec précision, livrée pour résonner.</span>
+        <span data-en>A high-level athlete turned creator, I bring together the rigor of sport, the charisma of modeling and an instinct for content that converts. Every collaboration is treated like a performance: prepared, executed with precision, delivered to resonate.</span>
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:clamp(1rem,2vw,1.6rem);margin-top:clamp(2.5rem,5vw,4rem)">
+      <article data-reveal data-hoverzoom style="position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:0 26px 60px -34px rgba(20,30,60,.32);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s,border-color .5s" style-hover="transform:translateY(-8px);box-shadow:0 40px 80px -34px rgba(20,30,60,.42);border-color:var(--accent)">
+        <div style="position:relative;aspect-ratio:4/5;overflow:hidden">
+          <img src="assets/ugc-bulk-creator.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 30%"/>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 46%,rgba(10,11,13,.7) 100%)"></div>
+          <span style="position:absolute;top:1rem;left:1.1rem;font-family:var(--serif);font-size:2rem;color:rgba(255,255,255,.85)">01</span>
+        </div>
+        <div style="padding:1.4rem 1.4rem 1.6rem">
+          <span style="display:block;font:600 .68rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem"><span data-fr>Créateur</span><span data-en>Creator</span></span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.4vw,1.85rem);line-height:1.05;margin-bottom:.6rem;color:var(--ink)"><span data-fr>Contenu UGC qui convertit</span><span data-en>UGC that converts</span></h3>
+          <p style="color:var(--ink-soft);font-size:.94rem;line-height:1.6;margin-bottom:1rem"><span data-fr>Des vidéos authentiques et léchées, pensées hook, rythme et intention. Pas seulement de jolies images : des résultats.</span><span data-en>Authentic, polished videos built around hook, pace and intent. Not just pretty visuals: results.</span></p>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Hooks</span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Storytelling</span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Conversion</span>
+          </div>
+        </div>
+      </article>
+
+      <article data-reveal data-hoverzoom style="position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:0 26px 60px -34px rgba(20,30,60,.32);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s,border-color .5s" style-hover="transform:translateY(-8px);box-shadow:0 40px 80px -34px rgba(20,30,60,.42);border-color:var(--accent)">
+        <div style="position:relative;aspect-ratio:4/5;overflow:hidden">
+          <img src="assets/studio-tank-01.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 25%"/>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 46%,rgba(10,11,13,.7) 100%)"></div>
+          <span style="position:absolute;top:1rem;left:1.1rem;font-family:var(--serif);font-size:2rem;color:rgba(255,255,255,.85)">02</span>
+        </div>
+        <div style="padding:1.4rem 1.4rem 1.6rem">
+          <span style="display:block;font:600 .68rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem"><span data-fr>Athlète</span><span data-en>Athlete</span></span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.4vw,1.85rem);line-height:1.05;margin-bottom:.6rem;color:var(--ink)"><span data-fr>Basketteur de haut niveau</span><span data-en>High-level baller</span></h3>
+          <p style="color:var(--ink-soft);font-size:.94rem;line-height:1.6;margin-bottom:1rem"><span data-fr>La discipline, l’explosivité et le sang-froid d’un compétiteur. Une crédibilité sportive réelle, jamais jouée.</span><span data-en>The discipline, explosiveness and composure of a competitor. Real athletic credibility, never faked.</span></p>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Discipline</span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em"><span data-fr>Explosivité</span><span data-en>Explosive</span></span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Mental</span>
+          </div>
+        </div>
+      </article>
+
+      <article data-reveal data-hoverzoom style="position:relative;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--surface);box-shadow:0 26px 60px -34px rgba(20,30,60,.32);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s,border-color .5s" style-hover="transform:translateY(-8px);box-shadow:0 40px 80px -34px rgba(20,30,60,.42);border-color:var(--accent)">
+        <div style="position:relative;aspect-ratio:4/5;overflow:hidden">
+          <img src="assets/model-velvet-bust2.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 18%"/>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 46%,rgba(10,11,13,.7) 100%)"></div>
+          <span style="position:absolute;top:1rem;left:1.1rem;font-family:var(--serif);font-size:2rem;color:rgba(255,255,255,.85)">03</span>
+        </div>
+        <div style="padding:1.4rem 1.4rem 1.6rem">
+          <span style="display:block;font:600 .68rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem"><span data-fr>Mannequin</span><span data-en>Model</span></span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,2.4vw,1.85rem);line-height:1.05;margin-bottom:.6rem;color:var(--ink)"><span data-fr>Présence devant l’objectif</span><span data-en>Presence on camera</span></h3>
+          <p style="color:var(--ink-soft);font-size:.94rem;line-height:1.6;margin-bottom:1rem"><span data-fr>Une prestance naturelle et une polyvalence qui épousent l’ADN de chaque marque, du streetwear au haut de gamme.</span><span data-en>Natural poise and a versatility that fits every brand’s DNA, from streetwear to luxury.</span></p>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em"><span data-fr>Éditorial</span><span data-en>Editorial</span></span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Lookbook</span>
+            <span style="font:500 .66rem/1 var(--sans);letter-spacing:.04em;color:var(--ink-soft);border:1px solid var(--line);border-radius:100px;padding:.5em .8em">Lifestyle</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="ugc" style="padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);max-width:1500px;margin:0 auto;scroll-margin-top:80px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1.5rem 2rem;margin-bottom:clamp(2rem,4vw,3rem)">
+      <div>
+        <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem">
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">02</span>
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)"><span data-fr>Portfolio UGC</span><span data-en>UGC Portfolio</span></span>
+        </div>
+        <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5.2vw,4.2rem);line-height:1.02;letter-spacing:-.01em"><span data-fr>Le contenu qui<br>fait vendre.</span><span data-en>Content that<br>sells.</span></h2>
+      </div>
+      <div data-reveal style="display:flex;gap:.6rem">
+        <button type="button" data-chip="all" onClick="{{ fAll }}" style="padding:.62em 1.15em;border-radius:100px;font:600 .72rem/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;cursor:pointer;border-style:solid;border-width:1px"><span data-fr>Tout</span><span data-en>All</span></button>
+        <button type="button" data-chip="video" onClick="{{ fVideo }}" style="padding:.62em 1.15em;border-radius:100px;font:600 .72rem/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;cursor:pointer;border-style:solid;border-width:1px"><span data-fr>Vidéo</span><span data-en>Video</span></button>
+        <button type="button" data-chip="produit" onClick="{{ fProduit }}" style="padding:.62em 1.15em;border-radius:100px;font:600 .72rem/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;cursor:pointer;border-style:solid;border-width:1px"><span data-fr>Produit</span><span data-en>Product</span></button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:clamp(.8rem,1.5vw,1.3rem)">
+
+      <article data-cat="video" data-reveal data-hoverzoom onClick="{{ playBulk }}" style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;cursor:pointer;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <div data-vslot data-vsrc="uploads/IMG_0915.mp4" data-vposter="assets/ugc-bulk-lifestyle-01.jpg" data-vpos="50% 50%" style="position:absolute;inset:0;width:100%;height:100%"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,.2) 0%,rgba(10,11,13,0) 28%,rgba(10,11,13,.88) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;gap:.45em;padding:.42em .8em;background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff">▶ Reels</span>
+        <span data-play title="Cliquez pour le son" style="position:absolute;top:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;z-index:2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.4rem">Bulk</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.1"><span data-fr>Hydratation &amp; test produit</span><span data-en>Hydration &amp; product test</span></h3>
+          <p data-cardnote style="color:#d7d9df;font-size:.82rem;line-height:1.5"><span data-fr>Vidéo lifestyle tournée à domicile : présentation produit, bénéfices et démonstration, format vertical optimisé Reels &amp; TikTok.</span><span data-en>Lifestyle video shot at home: product intro, benefits and demo, vertical format tuned for Reels &amp; TikTok.</span></p>
+        </div>
+      </article>
+
+      <article data-cat="produit" data-reveal data-hoverzoom style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <img src="assets/ugc-maserati-watch-silver.jpg" alt="Maserati" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 40%,rgba(10,11,13,.85) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;padding:.42em .8em;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff"><span data-fr>Produit</span><span data-en>Product</span></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.35rem">Maserati</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.1"><span data-fr>Chronographe argent</span><span data-en>Silver chronograph</span></h3>
+        </div>
+      </article>
+
+      <article data-cat="video" data-reveal data-hoverzoom onClick="{{ playMaserati }}" style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;cursor:pointer;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <div data-vslot data-vsrc="uploads/IMG_0996.mp4" data-vposter="assets/ugc-maserati-lifestyle.jpg" data-vpos="50% 40%" style="position:absolute;inset:0;width:100%;height:100%"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,.2) 0%,rgba(10,11,13,0) 28%,rgba(10,11,13,.88) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;gap:.45em;padding:.42em .8em;background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff">▶ Reels</span>
+        <span data-play title="Cliquez pour le son" style="position:absolute;top:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;z-index:2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.4rem">Maserati</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.1"><span data-fr>Montre lifestyle</span><span data-en>Lifestyle watch</span></h3>
+          <p data-cardnote style="color:#d7d9df;font-size:.82rem;line-height:1.5"><span data-fr>Mise en scène élégante d’un chronographe : storytelling premium, plans détail et port au poignet.</span><span data-en>Elegant staging of a chronograph: premium storytelling, detail shots and on-wrist wear.</span></p>
+        </div>
+      </article>
+
+      <article data-cat="produit" data-reveal data-hoverzoom style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <img src="assets/ugc-bulk-flatlay-01.jpg" alt="Bulk" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 40%,rgba(10,11,13,.85) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;padding:.42em .8em;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff"><span data-fr>Produit</span><span data-en>Product</span></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.35rem">Bulk</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.1"><span data-fr>Packshot hydratation</span><span data-en>Hydration packshot</span></h3>
+        </div>
+      </article>
+
+      <article data-cat="video" data-reveal data-hoverzoom onClick="{{ playJude }}" style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;cursor:pointer;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <div data-vslot data-vsrc="uploads/IMG_1019.mp4" data-vposter="assets/ugc-jude-flatlay-01.jpg" data-vpos="50% 50%" style="position:absolute;inset:0;width:100%;height:100%"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,.2) 0%,rgba(10,11,13,0) 28%,rgba(10,11,13,.88) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;gap:.45em;padding:.42em .8em;background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff">▶ UGC</span>
+        <span data-play title="Cliquez pour le son" style="position:absolute;top:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;z-index:2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.4rem">Jude Marlowe · Noblart</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.1"><span data-fr>Lunettes &amp; parfum</span><span data-en>Eyewear &amp; fragrance</span></h3>
+          <p data-cardnote style="color:#d7d9df;font-size:.82rem;line-height:1.5"><span data-fr>Unboxing et flat-lays haut de gamme, ambiance lumineuse et minimale, pour une paire de lunettes et un parfum.</span><span data-en>High-end unboxing and flat-lays, bright minimal mood, for an eyewear and fragrance pairing.</span></p>
+        </div>
+      </article>
+
+      <article data-cat="produit" data-reveal data-hoverzoom style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <img src="assets/ugc-jude-flatlay-02.jpg" alt="Jude Marlowe" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 40%,rgba(10,11,13,.85) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;padding:.42em .8em;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff"><span data-fr>Produit</span><span data-en>Product</span></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.35rem">Jude Marlowe</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.1"><span data-fr>Lunettes en écrin</span><span data-en>Cased eyewear</span></h3>
+        </div>
+      </article>
+
+      <article data-cat="video" data-reveal data-hoverzoom onClick="{{ playSport }}" style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;cursor:pointer;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <div data-vslot data-vsrc="uploads/IMG_0624.mp4" data-vposter="assets/studio-tank-01.jpg" data-vpos="50% 22%" style="position:absolute;inset:0;width:100%;height:100%"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,.2) 0%,rgba(10,11,13,0) 28%,rgba(10,11,13,.88) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;gap:.45em;padding:.42em .8em;background:rgba(10,11,13,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff">▶ Reels</span>
+        <span data-play title="Cliquez pour le son" style="position:absolute;top:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;z-index:2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.4rem">Sportswear</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.1"><span data-fr>Débardeur de compression</span><span data-en>Compression fit</span></h3>
+          <p data-cardnote style="color:#d7d9df;font-size:.82rem;line-height:1.5"><span data-fr>Test et recommandation d’un débardeur de compression, format review dynamique avec sous-titres.</span><span data-en>Review and recommendation of a compression top, dynamic captioned review format.</span></p>
+        </div>
+      </article>
+
+      <article data-cat="produit" data-reveal data-hoverzoom style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <img src="assets/ugc-maserati-watch-bronze.jpg" alt="Maserati" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 40%,rgba(10,11,13,.85) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;padding:.42em .8em;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff"><span data-fr>Produit</span><span data-en>Product</span></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.35rem">Maserati</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.1"><span data-fr>Chronographe bronze</span><span data-en>Bronze chronograph</span></h3>
+        </div>
+      </article>
+
+      <article data-cat="produit" data-reveal data-hoverzoom style="position:relative;border-radius:18px;overflow:hidden;background:#0d0f13;border:1px solid var(--line);aspect-ratio:3/4;box-shadow:0 24px 54px -32px rgba(20,30,60,.4);transition:transform .6s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-6px);box-shadow:0 40px 74px -32px rgba(20,30,60,.5)">
+        <img src="assets/ugc-bulk-flatlay-02.jpg" alt="Bulk" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 40%,rgba(10,11,13,.85) 100%)"></div>
+        <span style="position:absolute;top:1rem;left:1rem;display:inline-flex;align-items:center;padding:.42em .8em;background:rgba(10,11,13,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:100px;font:600 .6rem/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#fff"><span data-fr>Produit</span><span data-en>Product</span></span>
+        <div style="position:absolute;left:1.1rem;right:1.1rem;bottom:1.1rem;color:#fff">
+          <span style="display:block;font:600 .64rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.35rem">Bulk</span>
+          <h3 style="font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,1.7vw,1.4rem);line-height:1.1"><span data-fr>Flat-lay cuisine</span><span data-en>Kitchen flat-lay</span></h3>
+        </div>
+      </article>
+
+    </div>
+    <p data-reveal style="margin-top:clamp(1.6rem,3vw,2.4rem);color:var(--muted);font-size:.86rem"><span data-fr>Les vidéos se lancent automatiquement, sans le son. Cliquez une carte pour le son et le plein écran.</span><span data-en>Videos play automatically, muted. Click a card for sound and fullscreen.</span></p>
+  </section>
+
+  <section id="athlete" style="position:relative;background:var(--bg-2);overflow:hidden;scroll-margin-top:80px">
+    <div aria-hidden="true" style="position:absolute;left:-14%;bottom:-40%;width:52vw;height:52vw;max-width:640px;border:1px solid rgba(46,91,230,.16);border-radius:50%;pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;left:-6%;bottom:-20%;width:30vw;height:30vw;max-width:360px;border:1px solid rgba(46,91,230,.12);border-radius:50%;pointer-events:none"></div>
+    <div data-two style="position:relative;max-width:1400px;margin:0 auto;padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(2rem,5vw,4.5rem);align-items:center">
+      <div data-reveal="scale" style="position:relative">
+        <div aria-hidden="true" style="position:absolute;inset:-10% -8%;background:radial-gradient(55% 55% at 50% 45%,rgba(46,91,230,.26),transparent 70%);filter:blur(6px)"></div>
+        <div data-hoverzoom style="position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:var(--surface);padding:8px;box-shadow:0 44px 90px -36px rgba(20,30,60,.5)">
+          <img src="assets/studio-tank-01.jpg" alt="Oumar Diakite athlète" style="width:100%;height:100%;object-fit:cover;object-position:50% 22%;border-radius:12px"/>
+        </div>
+        <div data-hoverzoom style="position:absolute;right:-8%;bottom:-8%;width:42%;aspect-ratio:3/4;border-radius:16px;overflow:hidden;border:5px solid var(--bg-2);box-shadow:0 30px 60px -30px rgba(20,30,60,.5)">
+          <img src="assets/studio-tank-02.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%"/>
+        </div>
+        <div style="position:absolute;left:-6%;top:8%;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.7rem 1rem;font:600 .68rem/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink);box-shadow:0 20px 44px -24px rgba(20,30,60,.4)">Basketball</div>
+      </div>
+      <div>
+        <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(1.2rem,2.5vw,1.8rem)">
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">03</span>
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)"><span data-fr>Carrière athlétique</span><span data-en>Athletic career</span></span>
+        </div>
+        <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5vw,4rem);line-height:1.02;letter-spacing:-.01em;margin-bottom:clamp(1.2rem,2.5vw,1.6rem)"><span data-fr>La discipline<br>d’abord.</span><span data-en>Discipline<br>first.</span></h2>
+        <p data-reveal style="color:var(--ink-soft);font-size:clamp(1.02rem,1.3vw,1.16rem);line-height:1.72;max-width:50ch;margin-bottom:clamp(1.8rem,3.5vw,2.4rem)"><span data-fr>Le basket m’a forgé : exigence, explosivité, sang-froid. La même énergie que je déploie sur un terrain, je la mets au service des marques : présence physique, endurance et esprit de compétition.</span><span data-en>Basketball shaped me: standards, explosiveness, composure. The same energy I bring to the court, I bring to brands: physical presence, endurance and a competitor’s mindset.</span></p>
+        <div data-reveal style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;max-width:520px">
+          <div style="background:var(--surface);padding:1.1rem 1.2rem">
+            <div style="font:500 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem"><span data-fr>Poste</span><span data-en>Position</span></div>
+            <div style="font-family:var(--serif);font-size:clamp(1.2rem,2vw,1.5rem);color:var(--ink)"><span data-fr>Ailier</span><span data-en>Forward</span></div>
+          </div>
+          <div style="background:var(--surface);padding:1.1rem 1.2rem">
+            <div style="font:500 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem"><span data-fr>Niveau</span><span data-en>Level</span></div>
+            <div style="font-family:var(--serif);font-size:clamp(1.2rem,2vw,1.5rem);color:var(--ink)"><span data-fr>Compétition</span><span data-en>Competitive</span></div>
+          </div>
+          <div style="background:var(--surface);padding:1.1rem 1.2rem">
+            <div style="font:500 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem"><span data-fr>Pratique</span><span data-en>Experience</span></div>
+            <div style="font-family:var(--serif);font-size:clamp(1.2rem,2vw,1.5rem);color:var(--ink)">10+ <span style="font-size:.6em" data-fr>ans</span><span style="font-size:.6em" data-en>yrs</span></div>
+          </div>
+          <div style="background:var(--surface);padding:1.1rem 1.2rem">
+            <div style="font:500 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem"><span data-fr>Atout</span><span data-en>Strength</span></div>
+            <div style="font-family:var(--serif);font-size:clamp(1.2rem,2vw,1.5rem);color:var(--ink)"><span data-fr>Explosivité</span><span data-en>Explosive</span></div>
+          </div>
+        </div>
+        <a data-reveal href="#contact" style="display:inline-flex;align-items:center;gap:.6em;margin-top:clamp(1.6rem,3vw,2.2rem);padding:1.05em 1.7em;color:var(--ink);font:600 .82rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border-radius:100px;text-decoration:none;border:1px solid var(--line);transition:border-color .4s,background .4s" style-hover="border-color:var(--ink);background:rgba(26,27,34,.04)"><span data-fr>Discuter d’une campagne sport</span><span data-en>Discuss a sports campaign</span><span>→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section id="editorial" style="position:relative;background:#101217;color:#F3F0E9;overflow:hidden">
+    <div aria-hidden="true" style="position:absolute;right:-8%;top:-10%;width:44vw;height:44vw;max-width:560px;background:radial-gradient(circle,rgba(46,91,230,.18),transparent 68%);filter:blur(30px);pointer-events:none"></div>
+    <div aria-hidden="true" style="position:absolute;left:-6%;bottom:-14%;width:40vw;height:40vw;max-width:520px;background:radial-gradient(circle,rgba(20,120,90,.16),transparent 70%);filter:blur(34px);pointer-events:none"></div>
+    <div style="position:relative;max-width:1500px;margin:0 auto;padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem)">
+      <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(1.6rem,3vw,2.4rem)">
+        <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">04</span>
+        <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:rgba(243,240,233,.66)"><span data-fr>Éditorial</span><span data-en>Editorial</span></span>
+        <span style="flex:1;height:1px;background:rgba(243,240,233,.18)"></span>
+      </div>
+      <div data-two style="display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.4rem,4vw,3.5rem);align-items:end;margin-bottom:clamp(2.4rem,5vw,3.8rem)">
+        <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1;letter-spacing:-.01em;max-width:14ch"><span data-fr>Le velours <span style="font-style:italic;color:var(--accent)">&amp;</span> la lumière.</span><span data-en>Velvet <span style="font-style:italic;color:var(--accent)">&amp;</span> light.</span></h2>
+        <p data-reveal style="color:rgba(243,240,233,.72);font-size:clamp(1.02rem,1.3vw,1.16rem);line-height:1.72;max-width:46ch"><span data-fr>Du costume sur-mesure au noir et blanc intemporel : une présence qui porte chaque univers de marque, de la campagne premium à l’éditorial mode.</span><span data-en>From tailored velvet to timeless black and white: a presence that carries every brand world, from premium campaign to fashion editorial.</span></p>
+      </div>
+      <div data-edit-grid style="display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:clamp(.8rem,1.6vw,1.4rem);align-items:start">
+        <figure data-reveal data-hoverzoom style="margin:0;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:3/4;margin-top:clamp(2rem,6vw,4.5rem);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)">
+          <img src="assets/model-bw-coat-walk.png" alt="Oumar Diakite éditorial manteau" style="width:100%;height:100%;object-fit:cover;object-position:50% 28%"/>
+          <span style="position:absolute;left:1rem;bottom:1rem;font:600 .64rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff"><span data-fr>Mode</span><span data-en>Fashion</span></span>
+        </figure>
+        <figure data-reveal="scale" data-hoverzoom style="margin:0;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;box-shadow:0 44px 84px -30px rgba(0,0,0,.72)">
+          <img src="assets/model-velvet-seated.png" alt="Oumar Diakite costume velours" style="width:100%;height:100%;object-fit:cover;object-position:50% 32%"/>
+          <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(243,240,233,.12);border-radius:inherit;pointer-events:none"></div>
+          <span style="position:absolute;left:1rem;bottom:1rem;font:600 .64rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff"><span data-fr>Sur-mesure</span><span data-en>Tailored</span></span>
+        </figure>
+        <figure data-reveal data-hoverzoom style="margin:0;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:3/4;margin-top:clamp(3rem,9vw,7rem);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)">
+          <img src="assets/model-bw-black-hand.png" alt="Oumar Diakite noir et blanc" style="width:100%;height:100%;object-fit:cover;object-position:50% 18%"/>
+          <span style="position:absolute;left:1rem;bottom:1rem;font:600 .64rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#fff"><span data-fr>Studio</span><span data-en>Studio</span></span>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="book" style="padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);max-width:1500px;margin:0 auto;scroll-margin-top:80px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1.2rem 2rem;margin-bottom:clamp(2rem,4vw,3rem)">
+      <div>
+        <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem">
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">05</span>
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)"><span data-fr>Book mannequin</span><span data-en>Model book</span></span>
+        </div>
+        <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5.2vw,4.2rem);line-height:1.02;letter-spacing:-.01em"><span data-fr>Devant l’objectif.</span><span data-en>In front of the lens.</span></h2>
+      </div>
+      <p data-reveal style="color:var(--ink-soft);font-size:clamp(1rem,1.3vw,1.12rem);line-height:1.65;max-width:40ch"><span data-fr>Studio, lifestyle, éditorial : une polyvalence qui s’adapte à chaque univers de marque.</span><span data-en>Studio, lifestyle, editorial: a versatility that adapts to every brand world.</span></p>
+    </div>
+    <div style="columns:clamp(220px,26vw,300px);column-gap:clamp(.8rem,1.5vw,1.3rem)">
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/hero-portrait.jpg" alt="" style="width:100%;object-position:50% 20%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff"><span data-fr>Portrait</span><span data-en>Portrait</span></span>
+      </div>
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/model-bw-tee-seated.png" alt="" style="width:100%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff">Lifestyle</span>
+      </div>
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/model-casting-full.jpg" alt="" style="width:100%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff">Streetwear</span>
+      </div>
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/model-bw-black-stand.png" alt="" style="width:100%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff">Studio</span>
+      </div>
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/model-casting-side.jpg" alt="" style="width:100%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff"><span data-fr>Profil</span><span data-en>Profile</span></span>
+      </div>
+      <div data-reveal data-book data-hoverzoom style="position:relative;break-inside:avoid;margin-bottom:clamp(.8rem,1.5vw,1.3rem);border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 22px 50px -32px rgba(20,30,60,.4)">
+        <img src="assets/model-casting-bust.jpg" alt="" style="width:100%"/>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,13,0) 58%,rgba(10,11,13,.72) 100%)"></div>
+        <span data-cap style="position:absolute;left:1rem;bottom:1rem;font:600 .68rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#fff"><span data-fr>Regard</span><span data-en>Gaze</span></span>
+      </div>
+    </div>
+    <p data-reveal style="margin-top:clamp(1.4rem,3vw,2rem);color:var(--muted);font-size:.86rem"><span data-fr>Book complet et mensurations sur demande.</span><span data-en>Full book and measurements on request.</span></p>
+  </section>
+
+  <section id="temoignages" style="padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);max-width:1300px;margin:0 auto">
+    <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(1.6rem,3vw,2.4rem)">
+      <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">06</span>
+      <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)"><span data-fr>Témoignages</span><span data-en>Testimonials</span></span>
+      <span style="flex:1;height:1px;background:var(--line)"></span>
+    </div>
+    <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5vw,3.6rem);line-height:1.03;letter-spacing:-.01em;margin-bottom:clamp(2rem,4vw,3rem);max-width:16ch"><span data-fr>La parole aux marques.</span><span data-en>What brands say.</span></h2>
+    <div data-two style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2vw,1.6rem)">
+      <figure data-reveal style="margin:0;border:1px solid var(--line);border-radius:20px;padding:clamp(1.6rem,3vw,2.4rem);background:var(--surface);box-shadow:0 24px 56px -34px rgba(20,30,60,.3)">
+        <div style="font-family:var(--serif);font-size:2.6rem;line-height:.6;color:var(--accent)">&ldquo;</div>
+        <blockquote style="margin:.6rem 0 1.4rem;font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,1.8vw,1.5rem);line-height:1.4;color:var(--ink)"><span data-fr>Un contenu authentique, livré vite et parfaitement calibré pour notre cible. Les performances ont suivi.</span><span data-en>Authentic content, delivered fast and perfectly calibrated for our audience. The results followed.</span></blockquote>
+        <figcaption style="display:flex;align-items:center;gap:.8rem;font:500 .8rem/1.3 var(--sans);color:var(--muted)"><span style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);color:var(--ink)">M</span><span data-fr>Emplacement témoignage · à compléter</span><span data-en>Testimonial slot · to complete</span></figcaption>
+      </figure>
+      <figure data-reveal style="margin:0;border:1px solid var(--line);border-radius:20px;padding:clamp(1.6rem,3vw,2.4rem);background:var(--surface);box-shadow:0 24px 56px -34px rgba(20,30,60,.3)">
+        <div style="font-family:var(--serif);font-size:2.6rem;line-height:.6;color:var(--accent)">&ldquo;</div>
+        <blockquote style="margin:.6rem 0 1.4rem;font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,1.8vw,1.5rem);line-height:1.4;color:var(--ink)"><span data-fr>Professionnel, ponctuel et créatif. Oumar comprend une marque et la met en valeur avec naturel.</span><span data-en>Professional, punctual and creative. Oumar understands a brand and showcases it naturally.</span></blockquote>
+        <figcaption style="display:flex;align-items:center;gap:.8rem;font:500 .8rem/1.3 var(--sans);color:var(--muted)"><span style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-family:var(--serif);color:var(--ink)">B</span><span data-fr>Emplacement témoignage · à compléter</span><span data-en>Testimonial slot · to complete</span></figcaption>
+      </figure>
+    </div>
+    <p data-reveal style="margin-top:1.4rem;font-style:italic;color:var(--muted);font-size:.86rem"><span data-fr>Vos futurs témoignages de marques prendront place ici.</span><span data-en>Your future brand testimonials will live here.</span></p>
+  </section>
+
+  <section id="contact" style="position:relative;padding:clamp(5rem,11vw,9rem) clamp(1.1rem,4vw,3.5rem);scroll-margin-top:80px;overflow:hidden">
+    <div aria-hidden="true" style="position:absolute;right:-8%;top:10%;width:44vw;height:44vw;max-width:560px;background:radial-gradient(circle,rgba(46,91,230,.2),transparent 65%);filter:blur(28px);pointer-events:none"></div>
+    <div data-two style="position:relative;max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(2.2rem,5vw,4.5rem);align-items:center">
+      <div>
+        <div data-reveal style="display:flex;align-items:baseline;gap:1rem;margin-bottom:clamp(1.2rem,2.5vw,1.8rem)">
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.2em;color:var(--accent)">07</span>
+          <span style="font:600 .74rem/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)">Contact</span>
+        </div>
+        <h2 data-reveal style="font-family:var(--serif);font-weight:500;font-size:clamp(2.6rem,7vw,5.5rem);line-height:.98;letter-spacing:-.015em;margin-bottom:clamp(1.2rem,2.5vw,1.8rem)"><span data-fr>Collaborons.</span><span data-en>Let’s create.</span></h2>
+        <p data-reveal style="color:var(--ink-soft);font-size:clamp(1.02rem,1.3vw,1.18rem);line-height:1.7;max-width:44ch;margin-bottom:clamp(1.6rem,3vw,2.2rem)"><span data-fr>Une campagne UGC, un shooting, un partenariat sport ou lifestyle ? Parlons-en. Réponse sous 24–48 h.</span><span data-en>A UGC campaign, a shoot, a sports or lifestyle partnership? Let’s talk. Reply within 24–48 h.</span></p>
+        <a data-reveal href="mailto:oumardiakite2005@gmail.com" style="display:inline-block;font-family:var(--serif);font-size:clamp(1.1rem,2.2vw,1.7rem);color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:4px;transition:border-color .4s,color .3s" style-hover="border-color:var(--accent);color:var(--accent)">oumardiakite2005@gmail.com</a>
+        <div data-reveal style="display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;margin-top:clamp(1.6rem,3vw,2.2rem);font:500 .78rem/1 var(--sans);letter-spacing:.06em;color:var(--muted)">
+          <span style="display:inline-flex;align-items:center;gap:.5em"><span style="width:6px;height:6px;border-radius:50%;background:#1f9e5a"></span><span data-fr>Basé en France · International</span><span data-en>Based in France · Worldwide</span></span>
+          <span>Instagram · TikTok <span data-fr>(à connecter)</span><span data-en>(to connect)</span></span>
+        </div>
+      </div>
+
+      <form data-reveal="scale" onSubmit="{{ onSubmit }}" style="background:linear-gradient(160deg,var(--blue-1),#0a1428);color:var(--on-blue);border:1px solid rgba(20,30,60,.4);border-radius:24px;padding:clamp(1.6rem,3vw,2.4rem);display:flex;flex-direction:column;gap:1.1rem;box-shadow:0 40px 90px -40px rgba(20,30,60,.6)">
+        <div>
+          <label style="display:block;font:600 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--on-blue-soft);margin-bottom:.55rem"><span data-fr>Votre nom</span><span data-en>Your name</span></label>
+          <input data-field name="nom" type="text" required placeholder="Jean Dupont"/>
+        </div>
+        <div>
+          <label style="display:block;font:600 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--on-blue-soft);margin-bottom:.55rem"><span data-fr>Marque / société</span><span data-en>Brand / company</span></label>
+          <input data-field name="marque" type="text" placeholder="Nom de la marque"/>
+        </div>
+        <div>
+          <label style="display:block;font:600 .66rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--on-blue-soft);margin-bottom:.55rem"><span data-fr>Votre projet</span><span data-en>Your project</span></label>
+          <textarea data-field name="message" rows="4" required placeholder="Campagne UGC, shooting, partenariat…" style="resize:vertical"></textarea>
+        </div>
+        <button type="submit" style="display:inline-flex;align-items:center;justify-content:center;gap:.6em;padding:1.1em 1.7em;background:var(--accent);color:#fff;font:600 .84rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;border:0;border-radius:100px;cursor:pointer;box-shadow:0 16px 34px -14px var(--accent);transition:transform .5s cubic-bezier(.16,.8,.24,1),box-shadow .5s" style-hover="transform:translateY(-3px);box-shadow:0 24px 50px -14px var(--accent)"><span data-fr>Envoyer la demande</span><span data-en>Send request</span><span>→</span></button>
+        <p style="font-size:.7rem;color:var(--on-blue-soft);text-align:center"><span data-fr>Ouvre votre messagerie · aucune donnée stockée</span><span data-en>Opens your mail app · no data stored</span></p>
+      </form>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--line);padding:clamp(3rem,6vw,4.5rem) clamp(1.1rem,4vw,3.5rem) 2.5rem">
+    <div style="max-width:1400px;margin:0 auto">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:1.5rem;padding-bottom:clamp(2rem,4vw,3rem);border-bottom:1px solid var(--line)">
+        <div>
+          <div style="font-family:var(--serif);font-weight:500;font-size:clamp(2.4rem,7vw,5rem);line-height:.9;color:transparent;-webkit-text-stroke:1px rgba(26,27,34,.45)">Diakite</div>
+          <div style="margin-top:1rem;font:600 .74rem/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)"><span data-fr>Créateur UGC · Athlète · Mannequin</span><span data-en>UGC Creator · Athlete · Model</span></div>
+        </div>
+        <a href="mailto:oumardiakite2005@gmail.com" style="font-family:var(--serif);font-size:clamp(1rem,1.6vw,1.4rem);color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:3px;transition:border-color .4s" style-hover="border-color:var(--accent)">oumardiakite2005@gmail.com</a>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem;padding-top:1.6rem;font:500 .74rem/1.4 var(--sans);color:var(--muted)">
+        <span>© {{ year }} Oumar Diakite · <span data-fr>Tous droits réservés</span><span data-en>All rights reserved</span></span>
+        <a href="#top" style="display:inline-flex;align-items:center;gap:.5em;color:var(--muted);text-decoration:none;transition:color .3s" style-hover="color:var(--ink)"><span data-fr>Retour en haut</span><span data-en>Back to top</span> ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <sc-if value="{{ videoOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeVideo }}" style="position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:clamp(1rem,4vw,3rem);background:rgba(8,10,14,.88);backdrop-filter:blur(10px)">
+      <button type="button" aria-label="Fermer" onClick="{{ closeVideo }}" style="position:absolute;top:1.4rem;right:1.4rem;width:48px;height:48px;border:1px solid rgba(255,255,255,.3);border-radius:50%;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:1.15rem">✕</button>
+      <div onClick="{{ stopEvt }}" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:100%">
+        <div style="position:relative;border-radius:20px;overflow:hidden;box-shadow:0 50px 110px -24px rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.14);background:#000">
+          {{ videoNode }}
+        </div>
+        <div style="text-align:center;color:#fff">
+          <span style="display:block;font:600 .68rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#8fb0ff;margin-bottom:.4rem">{{ videoBrand }}</span>
+          <span style="font-family:var(--serif);font-size:clamp(1.1rem,2.4vw,1.5rem)">{{ videoTitle }}</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accent&quot;: {&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2E5BE6&quot;,&quot;options&quot;:[&quot;#2E5BE6&quot;,&quot;#3E6BF5&quot;,&quot;#1E56D6&quot;,&quot;#c98a2b&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Style&quot;},
+  &quot;grain&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Style&quot;},
+  &quot;initialLang&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;fr&quot;,&quot;options&quot;:[&quot;fr&quot;,&quot;en&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenu&quot;}
+}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.rootRef = React.createRef();
+    this.state = { lang: (props && props.initialLang) || 'fr', filter: 'all', menuOpen: false, animOn: '', video: null };
+    this._raf = 0;
+    this._ios = [];
+  }
+  componentDidMount(){
+    try { const s = localStorage.getItem('od_lang'); if (s === 'fr' || s === 'en') this.setState({ lang: s }); } catch(e){}
+    this.setState({ animOn: 'on' });
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => { this._raf = 0; this.handleScroll(); });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll, { passive: true });
+    this._onKey = (e) => { if (e.key === 'Escape') this.setState({ video: null, menuOpen: false }); };
+    window.addEventListener('keydown', this._onKey);
+    requestAnimationFrame(() => { this.setupObservers(); this.handleScroll(); });
+  }
+  componentWillUnmount(){
+    if (this._onScroll){ window.removeEventListener('scroll', this._onScroll); window.removeEventListener('resize', this._onScroll); }
+    if (this._onKey){ window.removeEventListener('keydown', this._onKey); }
+    if (this._raf) cancelAnimationFrame(this._raf);
+    this._ios.forEach(io => { try { io.disconnect(); } catch(e){} });
+  }
+  componentDidUpdate(){ try { this.buildVideos(); } catch(e){} }
+  setupObservers(){
+    const root = this.rootRef.current; if (!root) return;
+    const rio = new IntersectionObserver((es) => {
+      es.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); rio.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    root.querySelectorAll('[data-reveal]').forEach(el => rio.observe(el));
+    this._ios.push(rio);
+    const cio = new IntersectionObserver((es) => {
+      es.forEach(en => { if (en.isIntersecting){ this.runCounter(en.target); cio.unobserve(en.target); } });
+    }, { threshold: 0.5 });
+    root.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+    this._ios.push(cio);
+    this.buildVideos();
+  }
+  buildVideos(){
+    const root = this.rootRef.current; if (!root) return;
+    if (!this._vio){
+      const playInview = (v) => { v.muted = true; v.volume = 0; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); };
+      this._playInview = playInview;
+      this._vio = new IntersectionObserver((es) => {
+        es.forEach(en => {
+          const v = en.target;
+          v._inview = en.isIntersecting;
+          if (en.isIntersecting){ playInview(v); }
+          else { try { v.pause(); } catch(e){} }
+        });
+      }, { threshold: 0.2 });
+      this._ios.push(this._vio);
+    }
+    const vio = this._vio; const playInview = this._playInview;
+    // Build videos imperatively so React never manages (and never un-mutes) them.
+    root.querySelectorAll('[data-vslot]').forEach(slot => {
+      if (slot._built) return; slot._built = true;
+      const v = document.createElement('video');
+      v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.volume = 0;
+      v.setAttribute('muted', ''); v.setAttribute('loop', ''); v.setAttribute('playsinline', ''); v.setAttribute('autoplay', '');
+      v.preload = 'metadata';
+      v.poster = slot.getAttribute('data-vposter') || '';
+      v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:' + (slot.getAttribute('data-vpos') || '50% 50%');
+      v.src = slot.getAttribute('data-vsrc');
+      const enforce = () => { if (!v.muted) v.muted = true; if (v.volume !== 0) v.volume = 0; if (!v.loop) v.loop = true; };
+      v.addEventListener('loadedmetadata', enforce);
+      v.addEventListener('play', enforce);
+      v.addEventListener('volumechange', enforce);
+      v.addEventListener('timeupdate', enforce);
+      v.addEventListener('pause', () => { if (v._inview) playInview(v); });
+      v.addEventListener('ended', () => { try { v.currentTime = 0; playInview(v); } catch(e){} });
+      slot.appendChild(v);
+      v._inview = false;
+      vio.observe(v);
+    });
+  }
+  runCounter(el){
+    const to = parseFloat(el.getAttribute('data-to')) || 0;
+    const dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+    const suf = el.getAttribute('data-suffix') || '';
+    const dur = 1500; const t0 = performance.now();
+    const fmt = (v) => (dec > 0 ? v.toFixed(dec) : Math.round(v).toString()).replace('.', ',') + suf;
+    const tick = (t) => {
+      let p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(to * e);
+      if (p < 1) requestAnimationFrame(tick); else el.textContent = fmt(to);
+    };
+    requestAnimationFrame(tick);
+  }
+  handleScroll(){
+    const root = this.rootRef.current; if (!root) return;
+    const y = window.scrollY || window.pageYOffset || 0;
+    root.setAttribute('data-scrolled', y > 24 ? 'on' : 'off');
+    const prog = root.querySelector('[data-progress]');
+    if (prog){ const h = document.documentElement.scrollHeight - window.innerHeight; prog.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, y / h) : 0) + ')'; }
+    root.querySelectorAll('[data-parallax]').forEach(el => {
+      const sp = parseFloat(el.getAttribute('data-parallax')) || 0;
+      el.style.transform = 'translate3d(0,' + (y * sp).toFixed(1) + 'px,0)';
+    });
+  }
+  setLang(l){ this.setState({ lang: l, menuOpen: false }); try { localStorage.setItem('od_lang', l); } catch(e){} }
+  openVid(src, poster, brand, titleFr, titleEn){
+    const title = this.state.lang === 'en' ? titleEn : titleFr;
+    this.setState({ video: { src: src, poster: poster, brand: brand, title: title } });
+  }
+  submitContact(e){
+    e.preventDefault();
+    const f = e.currentTarget;
+    const g = (n) => { const el = f.elements[n]; return el ? (el.value || '').trim() : ''; };
+    const nom = g('nom'), marque = g('marque'), msg = g('message');
+    const subject = 'Demande de collaboration' + (marque ? (' \u2014 ' + marque) : '') + (nom ? (' (' + nom + ')') : '');
+    const body = 'Nom: ' + nom + '\nMarque / societe: ' + marque + '\n\n' + msg;
+    window.location.href = 'mailto:oumardiakite2005@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+  renderVals(){
+    const p = this.props || {};
+    const v = this.state.video;
+    return {
+      rootRef: this.rootRef,
+      accent: p.accent || '#2E5BE6',
+      grainOn: (p.grain === false) ? 'off' : 'on',
+      animOn: this.state.animOn,
+      lang: this.state.lang,
+      filter: this.state.filter,
+      menu: this.state.menuOpen ? 'open' : 'closed',
+      year: '2026',
+      toFr: () => this.setLang('fr'),
+      toEn: () => this.setLang('en'),
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      fAll: () => this.setState({ filter: 'all' }),
+      fVideo: () => this.setState({ filter: 'video' }),
+      fProduit: () => this.setState({ filter: 'produit' }),
+      onSubmit: (e) => this.submitContact(e),
+      videoOpen: !!v,
+      videoSrc: v ? v.src : '',
+      videoPoster: v ? v.poster : '',
+      videoBrand: v ? v.brand : '',
+      videoTitle: v ? v.title : '',
+      videoNode: v ? React.createElement('video', { src: v.src, poster: v.poster, controls: true, autoPlay: true, playsInline: true, style: { display: 'block', height: 'min(80vh,860px)', maxWidth: '92vw', width: 'auto', background: '#000' } }) : null,
+      closeVideo: () => this.setState({ video: null }),
+      stopEvt: (e) => { e.stopPropagation(); },
+      playBulk: () => this.openVid('uploads/IMG_0915.mp4', 'assets/ugc-bulk-lifestyle-01.jpg', 'Bulk', 'Hydratation & test produit', 'Hydration & product test'),
+      playMaserati: () => this.openVid('uploads/IMG_0996.mp4', 'assets/ugc-maserati-lifestyle.jpg', 'Maserati', 'Montre lifestyle', 'Lifestyle watch'),
+      playJude: () => this.openVid('uploads/IMG_1019.mp4', 'assets/ugc-jude-flatlay-01.jpg', 'Jude Marlowe · Noblart', 'Lunettes & parfum', 'Eyewear & fragrance'),
+      playSport: () => this.openVid('uploads/IMG_0624.mp4', 'assets/studio-tank-01.jpg', 'Sportswear', 'Débardeur de compression', 'Compression fit')
+    };
+  }
+}
+</script>
+</body>
+</html>
